@@ -8,7 +8,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-
     this.state = {
       'isConnected':false,
       'overlay':{'type':'', 'display':false, 'title':'', 'message':'', 'modeName':''},
@@ -16,7 +15,6 @@ class App extends React.Component {
       'loading':false,
       'snapshot':undefined
     };
-
   }
 
   componentDidMount() {
@@ -38,7 +36,9 @@ class App extends React.Component {
         let img = URL.createObjectURL(result);
         this.setState({ 'snapshot': img }, () => {
         });
-        BluetoothService.turnCameraOff();
+        BluetoothService.turnCameraOff().then(() => {
+          console.log("Camera OFF.");
+        });
       });
     }, 5000);
   }
@@ -70,48 +70,17 @@ class App extends React.Component {
   }
 
   render() {
-    let homeButton;
-    let loading = this.state.loading;
-
-    if (this.state.isConnected === false) {
-      if (loading) {
-        homeButton = (
-          <button
-            className="button-home-disabled"
-            onClick={this.onConnectClick}
-            disabled
-          >
-            <div className="spinner">
-              <div>Connexion</div>
-            </div>
-          </button>
-        )
-      } else {
-        homeButton = (
+    return (
+      <div id='home'>
+        <div>
           <button
             className="button-home"
             onClick={this.onConnectClick}
           >
-            Connexion
+            <div className="spinner">
+              <div>Request Snapshot</div>
+            </div>
           </button>
-        )
-      }
-
-    } else {
-      homeButton = (
-        <button
-          className="button-home"
-          onClick={this.onDisconnectClick}
-        >
-          Déconnexion
-        </button>
-      )
-    }
-
-    return (
-      <div id='home'>
-        <div>
-        {homeButton}
         </div>
         <div>
           <img src={this.state.snapshot}/>
